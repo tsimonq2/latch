@@ -40,6 +40,22 @@ add_library(latch_config STATIC src/config.cpp src/contrast.cpp)
 target_link_libraries(latch_config PUBLIC latch_compiler ${LATCH_YAML})
 latch_warnings(latch_config)
 
+add_library(latch_state STATIC src/lock_state.cpp src/scale.cpp)
+target_link_libraries(latch_state PUBLIC latch_compiler)
+latch_warnings(latch_state)
+
+add_executable(lock_state_test tests/lock_state_test.cpp)
+target_link_libraries(lock_state_test PRIVATE latch_state)
+target_include_directories(lock_state_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+latch_warnings(lock_state_test)
+add_test(NAME lock_state COMMAND lock_state_test)
+
+add_executable(scale_test tests/scale_test.cpp)
+target_link_libraries(scale_test PRIVATE latch_state)
+target_include_directories(scale_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+latch_warnings(scale_test)
+add_test(NAME scale COMMAND scale_test)
+
 add_executable(config_test tests/config_test.cpp)
 target_link_libraries(config_test PRIVATE latch_config)
 target_include_directories(config_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
